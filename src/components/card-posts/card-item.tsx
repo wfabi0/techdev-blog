@@ -2,7 +2,15 @@ import { Post } from "@prisma/client";
 import moment from "moment";
 import { Session } from "next-auth";
 import Link from "next/link";
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import CardAvatar from "./card-avatar";
 
 interface CardItemProps {
@@ -13,7 +21,7 @@ interface CardItemProps {
 export default function CardItem({ session, post }: CardItemProps) {
   return (
     <Card className="shadow-lg">
-      <CardHeader>
+      <CardHeader className="pb-2">
         <CardDescription>
           <span className="flex justify-between">
             {moment(post.createdAt).format("MMMM Do, YYYY")}
@@ -26,15 +34,27 @@ export default function CardItem({ session, post }: CardItemProps) {
         </CardDescription>
         <CardTitle>
           <Link
-            className={`text-blue-500 ${post.title.length > 15 && "truncate"}`}
-            href={generateSlug(post.slug)}
+            className={`text-blue-500 antialiased line-clamp-1`}
+            href={"/blog/" + generateSlug(post.slug)}
+            title={post.title}
           >
-            {post.title.length > 15
-              ? post.title.substring(0, 15) + "..."
-              : post.title}
+            {post.title}
           </Link>
         </CardTitle>
       </CardHeader>
+      <CardContent>
+        <p className="text-gray-900 dark:text-gray-300 antialiased line-clamp-5">
+          {post.body}
+        </p>
+      </CardContent>
+      <CardFooter className="pb-3.5">
+        <Button
+          asChild
+          className="w-full bg-gray-300/30 text-zinc-600 hover:bg-gray-300/65 hover:text-zinc-700 dark:text-zinc-300 dark:bg-slate-700/50 dark:hover:bg-slate-900 dark:hover:text-zinc-200 transition duration-300"
+        >
+          <Link href={"/blog/" + generateSlug(post.slug)}>Read More</Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

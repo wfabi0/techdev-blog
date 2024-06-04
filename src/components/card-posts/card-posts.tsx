@@ -14,15 +14,17 @@ export default function CardPosts({ session }: CardPostsProps) {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     setIsLoading(true);
-    new Promise((resolve) => setTimeout(resolve, 5000)).then(() => {
-      fetch("api/posts", { method: "GET" }).then(async (resp) => {
-        setPosts((await resp.json())?.posts || []);
-        setIsLoading(false);
-      });
+    fetch("api/posts", { method: "GET" }).then(async (resp) => {
+      setPosts((await resp.json())?.posts || []);
+      setIsLoading(false);
     });
   }, []);
   return isLoading ? (
-    "Loading..."
+    <div className="flex pt-[10%] justify-center items-center">
+      <div
+        className={`h-14 w-14 animate-spin rounded-full border-t-4 border-solid border-gray-500 dark:border-white`}
+      />
+    </div>
   ) : (
     <div className="flex justify-center p-10 w-screen">
       <div className="grid md:grid-cols-3 gap-4 w-full">
