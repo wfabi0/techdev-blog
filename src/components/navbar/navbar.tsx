@@ -1,11 +1,15 @@
+import { auth } from "@/modules/auth/auth";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import NavbarLogin from "./navbar-login";
-import NavbarModeToggle from "./navbar-mode-toggle";
 import NavbarSearch from "./navbar-search";
-import { auth } from "@/modules/auth/auth";
+
+const NavbarModeToggle = dynamic(() => import("./navbar-mode-toggle"), {
+  ssr: false,
+});
 
 export default async function Navbar() {
   const session = await auth();
@@ -19,7 +23,7 @@ export default async function Navbar() {
           <NavbarSearch />
           <div className="flex">
             <Button asChild variant="ghost" size="icon">
-              <Link href={"https://github.com"}>
+              <Link href={"https://github.com/wfabi0/techdev-blog"}>
                 <FaGithub className="h-5 w-5" />
               </Link>
             </Button>
