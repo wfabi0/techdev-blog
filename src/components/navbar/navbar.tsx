@@ -17,10 +17,6 @@ export default async function Navbar() {
       <div className="flex">
         <div className="flex items-center">
           <NavbarSearch />
-          <Separator
-            className="bg-gray-400 h-full ml-4 mr-1.5"
-            orientation="vertical"
-          />
           <div className="flex">
             <Button asChild variant="ghost" size="icon">
               <Link href={"https://github.com"}>

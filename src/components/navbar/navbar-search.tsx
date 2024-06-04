@@ -1,8 +1,9 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChangeEvent, useState } from "react";
 import { Input } from "../ui/input";
-import { ChangeEvent, useEffect, useState } from "react";
+import { Separator } from "../ui/separator";
 
 export default function NavbarSearch() {
   const router = useRouter();
@@ -28,12 +29,18 @@ export default function NavbarSearch() {
 
   return (
     pathname === "/" && (
-      <Input
-        type="search"
-        onChange={onQueryChange}
-        placeholder={searchParams.get("search") || "Search for a post..."}
-        value={query}
-      />
+      <>
+        <Input
+          type="search"
+          onChange={onQueryChange}
+          placeholder={searchParams.get("search") || "Search for a post..."}
+          value={query}
+        />
+        <Separator
+          className="bg-gray-400 h-full ml-4 mr-1.5"
+          orientation="vertical"
+        />
+      </>
     )
   );
 }
