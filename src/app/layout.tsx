@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import Footer from "@/components/footer/footer";
+import Navbar from "@/components/navbar/navbar";
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import ThemeProvider from "@/providers/ThemeProvider";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Suspense } from "react";
+import "./globals.css";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,7 +30,10 @@ export default function RootLayout({
           enableSystem
           // disableTransitionOnChange
         >
-          {children}
+          <Navbar />
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+          <Footer />
+          <Toaster richColors closeButton />
         </ThemeProvider>
       </body>
     </html>

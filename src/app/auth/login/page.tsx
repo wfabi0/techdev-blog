@@ -14,7 +14,6 @@ import { FaGithub } from "react-icons/fa";
 export default function SignInPage() {
   return (
     <main className="flex min-h-screen flex-col justify-between bg-slate-50 dark:bg-[#0B1120] transition-colors duration-200">
-      <Navbar />
       <div className="flex items-center justify-center flex-grow">
         <Card>
           <CardHeader>
