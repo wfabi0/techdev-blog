@@ -4,6 +4,11 @@ import github from "next-auth/providers/github";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [github],
   callbacks: {
+    authorized({ request, auth }) {
+      // const { pathname } = request.nextUrl;
+      // if ([""].includes(pathname)) return !!auth;
+      return true;
+    },
     jwt({ token, trigger, session, account, profile }) {
       if (trigger === "update") token.name = session.user.name;
       if (account?.provider === "github") {
@@ -32,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/auth/login",
   },
-  debug: process.env.NODE_ENV !== "production" ? true : false,
+  // debug: process.env.NODE_ENV !== "production" ? true : false,
 });
 
 interface Token {

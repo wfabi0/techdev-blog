@@ -1,3 +1,4 @@
+import prisma from "../lib/prisma";
 import Footer from "@/components/footer/footer";
 import Navbar from "@/components/navbar/navbar";
 import { auth } from "@/modules/auth/auth";
