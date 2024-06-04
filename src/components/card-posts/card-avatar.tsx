@@ -8,7 +8,7 @@ interface CardAvatarProps {
 
 export default function CardAvatar({ session, id }: CardAvatarProps) {
   return (
-    <Avatar className="h-6 w-6 relative">
+    <Avatar className="h-6 w-6">
       <AvatarFallback>FB</AvatarFallback>
       <AvatarImage
         className="rounded-full"

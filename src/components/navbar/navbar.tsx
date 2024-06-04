@@ -14,8 +14,8 @@ const NavbarModeToggle = dynamic(() => import("./navbar-mode-toggle"), {
 export default async function Navbar() {
   const session = await auth();
   return (
-    <nav className="flex px-6 py-4 sticky top-0 justify-between border-gray-300 dark:border-gray-900 border-b-[0.01px] backdrop-blur items-center">
-      <div className="px-8 text-xl font-semibold transition duration-300">
+    <nav className="flex z-50 px-6 py-4 sticky top-0 justify-between border-gray-300 dark:border-gray-900 border-b-[0.01px] backdrop-blur items-center">
+      <div className="md:px-8 text-xl font-semibold transition duration-300">
         <Link href={"/"}>TECHDEV</Link>
       </div>
       <div className="flex">
