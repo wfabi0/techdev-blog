@@ -27,13 +27,13 @@ export default function NavbarSearch() {
   };
 
   return (
-    <>
+    pathname === "/" && (
       <Input
         type="search"
         onChange={onQueryChange}
         placeholder={searchParams.get("search") || "Search for a post..."}
         value={query}
       />
-    </>
+    )
   );
 }
