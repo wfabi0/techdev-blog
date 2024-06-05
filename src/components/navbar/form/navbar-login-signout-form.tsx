@@ -1,18 +1,16 @@
-import { signOut } from "@/modules/auth/auth";
+"use client";
+
+import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
 
 export default function NavbarLoginSignOutForm() {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut();
-      }}
+    <button
+      onClick={() => signOut()}
+      className="flex items-center cursor-default"
     >
-      <button className="flex items-center cursor-default" type="submit">
-        <LogOut className="mr-2 h-4 w-4" />
-        <span>Log out</span>
-      </button>
-    </form>
+      <LogOut className="mr-2 h-4 w-4" />
+      <span>Log out</span>
+    </button>
   );
 }
