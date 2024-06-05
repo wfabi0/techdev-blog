@@ -1,14 +1,24 @@
 "use client";
 
+import { PostsServices } from "@/modules/posts/posts-services";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Send, SquarePen } from "lucide-react";
 import { User } from "next-auth";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import "react-quill/dist/quill.snow.css";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -22,41 +32,82 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import NavbarLoginSignOutForm from "./form/navbar-login-signout-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import { Skeleton } from "../ui/skeleton";
+import NavbarLoginSignOutForm from "./form/navbar-login-signout-form";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex justify-center w-full h-full">
+      <Skeleton className="h-64 w-full rounded-md" />
+    </div>
+  ),
+});
 
 interface NavbarLoginMenuProps {
   session: User;
+  PostsServices: typeof PostsServices;
 }
 
 export const formSchema = z.object({
   "post-title": z.string({ required_error: " " }).min(3).max(50),
-  "post-body": z.string({ required_error: " " }).min(3).max(500),
+  "post-body": z.string({ required_error: " " }).min(3).max(5000),
 });
 
-export default function NavbarLoginMenu({ session }: NavbarLoginMenuProps) {
+export default function NavbarLoginMenu({
+  session,
+  PostsServices,
+}: NavbarLoginMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      "post-title": "",
+      "post-body": "",
+    },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("Submit!!!", data);
+    const post = await PostsServices.newPost(data);
+    form.reset();
+    if (!post || post?.error) {
+      return toast.error("Post not created, please try again.");
+    }
+    toast.success("Post created successfully.");
+    setIsDialogOpen(false);
   }
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link"],
+      [{ align: [] }],
+      [{ color: [] }],
+      ["code-block"],
+      ["clean"],
+    ],
+  };
+
+  const quillFormats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "link",
+    "align",
+    "color",
+    "code-block",
+  ];
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -87,7 +138,7 @@ export default function NavbarLoginMenu({ session }: NavbarLoginMenuProps) {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <button className="flex items-center cursor-default">
                   <SquarePen className="mr-2 h-4 w-4" />
                   <span>Create post</span>
@@ -108,7 +159,7 @@ export default function NavbarLoginMenu({ session }: NavbarLoginMenuProps) {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent>
+      <DialogContent className="max-w-4xl w-full">
         <DialogHeader>
           <DialogTitle>
             <p className="flex items-center justify-center md:justify-normal">
@@ -123,7 +174,7 @@ export default function NavbarLoginMenu({ session }: NavbarLoginMenuProps) {
         <Form {...form}>
           <form
             ref={ref}
-            className="space-y-3"
+            className="space-y-5"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -131,21 +182,16 @@ export default function NavbarLoginMenu({ session }: NavbarLoginMenuProps) {
               name="post-title"
               render={({ field }) => (
                 <FormItem>
-                  <div className="grid gap-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <FormLabel className="text-right">Post Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="Your post name."
-                          className="col-span-3"
-                          autoComplete="false"
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  </div>
-                  <FormMessage />
+                  <FormLabel className="text-right">Post Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Your post name."
+                      className="col-span-3"
+                      autoComplete="off"
+                      {...field}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
@@ -154,23 +200,42 @@ export default function NavbarLoginMenu({ session }: NavbarLoginMenuProps) {
               name="post-body"
               render={({ field }) => (
                 <FormItem>
-                  <div className="grid gap-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <FormLabel className="text-right">Post Body</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          rows={10}
-                          placeholder="Your post body."
-                          className="col-span-3"
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  </div>
-                  <FormMessage />
+                  <FormLabel className="text-right">Post Body</FormLabel>
+                  <FormControl className="col-span-4 max-h-80 h-64">
+                    <Controller
+                      control={form.control}
+                      name="post-body"
+                      render={({ field }) => (
+                        <div className="md:max-w-[52.8rem] max-w-[19.4rem]">
+                          <ReactQuill
+                            value={field.value || ""}
+                            onChange={field.onChange}
+                            className="max-h-80 overflow-y-auto h-64 w-full bg-none shadow-lg"
+                            placeholder="Write your post here..."
+                            modules={quillModules}
+                            formats={quillFormats}
+                            style={{
+                              wordWrap: "break-word",
+                              overflowWrap: "break-word",
+                            }}
+                          />
+                        </div>
+                      )}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />
+            <DialogFooter className="gap-y-2">
+              <DialogClose asChild>
+                <Button type="button" variant={"outline"}>
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? "Posting..." : "Post"}
+              </Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

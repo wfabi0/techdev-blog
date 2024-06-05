@@ -20,7 +20,7 @@ interface CardItemProps {
 
 export default function CardItem({ session, post }: CardItemProps) {
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg flex flex-col">
       <CardHeader className="pb-2">
         <CardDescription>
           <span className="flex justify-between">
@@ -43,11 +43,12 @@ export default function CardItem({ session, post }: CardItemProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-900 dark:text-gray-300 antialiased line-clamp-5">
-          {post.body}
-        </p>
+        <p
+          dangerouslySetInnerHTML={{ __html: post.body }}
+          className="text-gray-900 dark:text-gray-300 antialiased line-clamp-5"
+        />
       </CardContent>
-      <CardFooter className="pb-3.5">
+      <CardFooter className="flex pb-3.5 mt-auto">
         <Button
           asChild
           className="w-full bg-gray-300/30 text-zinc-600 hover:bg-gray-300/65 hover:text-zinc-700 dark:text-zinc-300 dark:bg-slate-700/50 dark:hover:bg-slate-900 dark:hover:text-zinc-200 transition duration-300"

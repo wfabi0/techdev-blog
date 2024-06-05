@@ -26,7 +26,7 @@ export default function CardPosts({ session }: CardPostsProps) {
       />
     </div>
   ) : (
-    <div className="flex justify-center p-10 w-screen">
+    <div className="flex justify-center md:p-10 p-2 w-screen">
       <div className="grid md:grid-cols-3 gap-4 w-full">
         {posts.map((post, index) => (
           <CardItem key={index} session={session} post={post} />

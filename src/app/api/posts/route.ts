@@ -1,4 +1,3 @@
-import { auth } from "@/modules/auth/auth";
 import { PostsServices } from "@/modules/posts/posts-services";
 import { NextResponse } from "next/server";
 

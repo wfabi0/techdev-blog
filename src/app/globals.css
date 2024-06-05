@@ -74,3 +74,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+.ql-toolbar .ql-stroke {
+  @apply dark:!stroke-white dark:!fill-none;
+}
+
+.ql-toolbar .ql-fill {
+  @apply dark:!fill-white dark:!stroke-current;
+}
+
+.ql-toolbar .ql-picker {
+  @apply dark:!text-white;
+}
+
+.ql-active .ql-stroke {
+  @apply dark:!stroke-violet-600 dark:!fill-none;
+}
+
+.ql-active .ql-fill {
+  @apply dark:!fill-violet-600 dark:!stroke-violet-600;
+}
+
+button:hover .ql-fill,
+.ql-picker-label:hover .ql-fill {
+  @apply dark:!fill-violet-600 dark:!stroke-none;
+}
+
+button:hover .ql-stroke,
+.ql-picker-label:hover .ql-stroke {
+  @apply dark:!stroke-violet-600 dark:!fill-none;
+}
