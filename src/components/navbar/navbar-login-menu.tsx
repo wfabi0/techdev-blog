@@ -1,7 +1,8 @@
 "use client";
 
-import { PostsServices } from "@/modules/posts/posts-services";
+import { newPost } from "@/modules/posts/posts-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Send, SquarePen } from "lucide-react";
 import { User } from "next-auth";
 import dynamic from "next/dynamic";
@@ -48,7 +49,7 @@ const ReactQuill = dynamic(() => import("react-quill"), {
 
 interface NavbarLoginMenuProps {
   session: User;
-  PostsServices: typeof PostsServices;
+  newPost: typeof newPost;
 }
 
 export const formSchema = z.object({
@@ -58,8 +59,10 @@ export const formSchema = z.object({
 
 export default function NavbarLoginMenu({
   session,
-  PostsServices,
+  newPost,
 }: NavbarLoginMenuProps) {
+  const queryClient = useQueryClient();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const ref = useRef<HTMLFormElement>(null);
@@ -72,13 +75,16 @@ export default function NavbarLoginMenu({
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    const post = await PostsServices.newPost(data);
+    const post = await newPost(data);
     form.reset();
     if (!post || post?.error) {
       return toast.error("Post not created, please try again.");
     }
     toast.success("Post created successfully.");
     setIsDialogOpen(false);
+    queryClient.refetchQueries({
+      queryKey: ["posts"],
+    });
   }
 
   const quillModules = {

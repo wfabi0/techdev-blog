@@ -10,6 +10,7 @@ import {
 import { signIn } from "@/modules/auth/auth";
 import { LogIn } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   return (

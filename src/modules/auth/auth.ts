@@ -9,6 +9,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // if ([""].includes(pathname)) return !!auth;
       return true;
     },
+    redirect({ url, baseUrl }) {
+      return url;
+    },
     jwt({ token, trigger, session, account, profile }) {
       if (trigger === "update") token.name = session.user.name;
       if (account?.provider === "github") {
@@ -31,12 +34,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.accessToken) {
         session.accessToken = token.accessToken as string;
       }
+      session.successTime = Date.now();
       return session;
     },
   },
   pages: {
     signIn: "/auth/login",
   },
+  trustHost: true,
   // debug: process.env.NODE_ENV !== "production" ? true : false,
 });
 
@@ -52,6 +57,7 @@ declare module "next-auth" {
   }
   interface Session {
     accessToken?: string;
+    successTime: number;
   }
   interface JWT {
     accessToken?: string;

@@ -20,7 +20,7 @@ interface CardItemProps {
 
 export default function CardItem({ session, post }: CardItemProps) {
   return (
-    <Card className="shadow-lg flex flex-col">
+    <Card className="shadow-lg flex flex-col min-h-[14rem] max-h-[30rem]">
       <CardHeader className="pb-2">
         <CardDescription>
           <span className="flex justify-between">
@@ -44,6 +44,7 @@ export default function CardItem({ session, post }: CardItemProps) {
       </CardHeader>
       <CardContent>
         <p
+          title={htmlToText(post.body)}
           dangerouslySetInnerHTML={{ __html: post.body }}
           className="text-gray-900 dark:text-gray-300 antialiased line-clamp-5"
         />
@@ -67,4 +68,10 @@ export function generateSlug(title: string) {
     .toLowerCase()
     .replace(/ /g, "-")
     .replace(/[^\w-]+/g, "");
+}
+
+function htmlToText(html: string) {
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+  return tempDiv.textContent || tempDiv.innerText || "";
 }

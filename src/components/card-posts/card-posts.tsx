@@ -4,21 +4,28 @@ import { Post } from "@prisma/client";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 import CardItem from "./card-item";
+import { useQuery } from "@tanstack/react-query";
 
 interface CardPostsProps {
   session: Session | null;
 }
 
 export default function CardPosts({ session }: CardPostsProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    setIsLoading(true);
-    fetch("api/posts", { method: "GET" }).then(async (resp) => {
-      setPosts((await resp.json())?.posts || []);
-      setIsLoading(false);
+  const fetchPosts = async () => {
+    const resp = await fetch("api/posts", {
+      method: "GET",
+      cache: "no-store",
     });
-  }, []);
+    console.log(resp);
+    const { posts }: { posts: Post[] } = await resp.json();
+    return posts;
+  };
+
+  const { isLoading, data: posts } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+  });
+
   return isLoading ? (
     <div className="flex pt-[10%] justify-center items-center">
       <div
@@ -28,9 +35,10 @@ export default function CardPosts({ session }: CardPostsProps) {
   ) : (
     <div className="flex justify-center md:p-10 p-2 w-screen">
       <div className="grid md:grid-cols-3 gap-4 w-full">
-        {posts.map((post, index) => (
-          <CardItem key={index} session={session} post={post} />
-        ))}
+        {posts &&
+          posts.map((post, index) => (
+            <CardItem key={index} session={session} post={post} />
+          ))}
       </div>
     </div>
   );
