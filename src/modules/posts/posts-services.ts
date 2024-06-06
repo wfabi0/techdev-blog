@@ -31,3 +31,26 @@ export async function getAllPosts(
     }
   }
 }
+
+export async function getLastPostByUser(userId: string) {
+  try {
+    const posts = await prisma?.post.findFirst({
+      where: {
+        authorsId: {
+          has: userId,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    if (!posts) return { error: "No post found", status: 404 };
+    return { posts };
+  } catch (error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { error: error.message, code: error.code, status: 500 };
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}

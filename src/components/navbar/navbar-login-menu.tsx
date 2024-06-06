@@ -81,7 +81,8 @@ export default function NavbarLoginMenu({
     const post = await newPost(data);
     form.reset();
     if (!post || post?.error) {
-      return toast.error("Post not created, please try again.");
+      setIsDialogOpen(false);
+      return toast.error(post.error || "Post not created, please try again.");
     }
     toast.success("Post created successfully.");
     setIsDialogOpen(false);
