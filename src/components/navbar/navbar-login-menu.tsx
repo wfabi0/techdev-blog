@@ -55,6 +55,7 @@ interface NavbarLoginMenuProps {
 export const formSchema = z.object({
   "post-title": z.string({ required_error: " " }).min(3).max(50),
   "post-body": z.string({ required_error: " " }).min(3).max(5000),
+  "post-author": z.string({ required_error: " " }).min(1),
 });
 
 export default function NavbarLoginMenu({
@@ -73,6 +74,8 @@ export default function NavbarLoginMenu({
       "post-body": "",
     },
   });
+
+  if (!session) return null;
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const post = await newPost(data);
@@ -115,6 +118,8 @@ export default function NavbarLoginMenu({
     "code-block",
   ];
 
+  if (!session) return <></>;
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DropdownMenu>
@@ -144,7 +149,15 @@ export default function NavbarLoginMenu({
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <DialogTrigger asChild>
+              <DialogTrigger
+                onClick={() => {
+                  form.setValue(
+                    "post-author",
+                    session.userId?.toString() || "128875797"
+                  );
+                }}
+                asChild
+              >
                 <button className="flex items-center cursor-default">
                   <SquarePen className="mr-2 h-4 w-4" />
                   <span>Create post</span>
@@ -228,6 +241,17 @@ export default function NavbarLoginMenu({
                         </div>
                       )}
                     />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="post-author"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl className="hidden">
+                    <Input type="hidden" disabled {...field} />
                   </FormControl>
                 </FormItem>
               )}

@@ -9,12 +9,17 @@ export async function newPost(formData: z.infer<typeof formSchema>) {
   "use server";
 
   try {
-    const { "post-title": title, "post-body": body } = formData;
+    const {
+      "post-title": title,
+      "post-body": body,
+      "post-author": author,
+    } = formData;
     const post = await prisma.post.create({
       data: {
         slug: generateSlug(title),
         title,
         body,
+        authorsId: [author],
         feedback: {},
       },
     });

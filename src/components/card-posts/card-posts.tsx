@@ -16,6 +16,7 @@ export default function CardPosts({ session }: CardPostsProps) {
   const { ref, inView } = useInView();
 
   const fetchPosts = async ({ pageParam }: { pageParam: number }) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     const resp = await fetch(`api/posts?page=${pageParam}`, {
       method: "GET",
       cache: "no-store",

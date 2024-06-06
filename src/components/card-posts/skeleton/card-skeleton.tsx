@@ -1,10 +1,9 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -12,7 +11,7 @@ export default function CardSkeleton() {
   return (
     <Card className="shadow-lg flex flex-col min-h-[14rem] max-h-[30rem]">
       <CardHeader className="pb-2">
-        <CardDescription>
+        <div>
           <span className="flex justify-between">
             <Skeleton className="h-4 w-32" />
             <span className="flex -space-x-3.5">
@@ -21,7 +20,7 @@ export default function CardSkeleton() {
               ))}
             </span>
           </span>
-        </CardDescription>
+        </div>
         <CardTitle>
           <Skeleton className="h-6 w-full" />
         </CardTitle>
