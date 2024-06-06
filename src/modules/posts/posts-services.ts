@@ -54,3 +54,21 @@ export async function getLastPostByUser(userId: string) {
     }
   }
 }
+
+export async function getPostBySlug(slug: string) {
+  try {
+    const post = await prisma?.post.findUnique({
+      where: {
+        slug,
+      },
+    });
+    if (!post) return { error: "No post found", status: 404 };
+    return { post };
+  } catch (error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { error: error.message, code: error.code, status: 500 };
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}

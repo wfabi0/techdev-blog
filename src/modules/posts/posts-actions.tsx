@@ -48,7 +48,19 @@ export async function newPost(formData: z.infer<typeof formSchema>) {
     return { post, status: 201 };
   } catch (error: any) {
     if (error instanceof PrismaClientKnownRequestError) {
-      return { error: error.message, code: error.code, status: 500 };
+      if (error.code === "P2002") {
+        return {
+          error: "Post not created, please use a different name.",
+          code: error.code,
+          status: 500,
+        };
+      } else {
+        return {
+          error: "Post not created, please try again later.",
+          code: error.code,
+          status: 500,
+        };
+      }
     } else {
       throw new Error(error.message);
     }

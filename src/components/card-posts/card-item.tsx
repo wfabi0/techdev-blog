@@ -1,5 +1,5 @@
 import { Post } from "@prisma/client";
-import moment from "moment";
+import { format } from "date-fns";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { Ref } from "react";
@@ -29,7 +29,7 @@ export default function CardItem({ session, post, innerRef }: CardItemProps) {
       <CardHeader className="pb-2">
         <CardDescription>
           <span className="flex justify-between">
-            {moment(post.createdAt).format("MMMM Do, YYYY")}
+            {format(post.createdAt, "MMMM do, yyyy")}
             <span className="flex -space-x-3.5">
               {post.authorsId.map((id) => (
                 <CardAvatar key={id} session={session} id={id} />
