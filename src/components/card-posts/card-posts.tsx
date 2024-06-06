@@ -1,30 +1,57 @@
 "use client";
 
 import { Post } from "@prisma/client";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Session } from "next-auth";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import CardItem from "./card-item";
-import { useQuery } from "@tanstack/react-query";
+import CardSkeleton from "./skeleton/card-skeleton";
 
 interface CardPostsProps {
   session: Session | null;
 }
 
 export default function CardPosts({ session }: CardPostsProps) {
-  const fetchPosts = async () => {
-    const resp = await fetch("api/posts", {
+  const { ref, inView } = useInView();
+
+  const fetchPosts = async ({ pageParam }: { pageParam: number }) => {
+    const resp = await fetch(`api/posts?page=${pageParam}`, {
       method: "GET",
       cache: "no-store",
     });
-    console.log(resp);
-    const { posts }: { posts: Post[] } = await resp.json();
+    const { posts } = await resp.json();
     return posts;
   };
 
-  const { isLoading, data: posts } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-  });
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["posts"],
+      queryFn: fetchPosts,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = lastPage.length ? allPages.length + 1 : undefined;
+        return nextPage;
+      },
+    });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
+
+  const postsContent = data?.pages.map((group: Post[]) =>
+    group.map((post: Post, index: number) => {
+      if (group.length == index + 1) {
+        return (
+          <CardItem innerRef={ref} key={index} session={session} post={post} />
+        );
+      } else {
+        return <CardItem key={index} session={session} post={post} />;
+      }
+    })
+  );
 
   return isLoading ? (
     <div className="flex pt-[10%] justify-center items-center">
@@ -33,12 +60,12 @@ export default function CardPosts({ session }: CardPostsProps) {
       />
     </div>
   ) : (
-    <div className="flex justify-center md:p-10 p-2 w-screen">
+    <div className="flex flex-col justify-center md:p-10 p-2 w-screen gap-y-10">
       <div className="grid md:grid-cols-3 gap-4 w-full">
-        {posts &&
-          posts.map((post, index) => (
-            <CardItem key={index} session={session} post={post} />
-          ))}
+        {postsContent}
+        {isFetchingNextPage && <CardSkeleton />}
+        {isFetchingNextPage && <CardSkeleton />}
+        {isFetchingNextPage && <CardSkeleton />}
       </div>
     </div>
   );

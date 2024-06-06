@@ -2,6 +2,7 @@ import { Post } from "@prisma/client";
 import moment from "moment";
 import { Session } from "next-auth";
 import Link from "next/link";
+import { Ref } from "react";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -16,11 +17,15 @@ import CardAvatar from "./card-avatar";
 interface CardItemProps {
   session: Session | null;
   post: Post;
+  innerRef?: Ref<HTMLParagraphElement>;
 }
 
-export default function CardItem({ session, post }: CardItemProps) {
+export default function CardItem({ session, post, innerRef }: CardItemProps) {
   return (
-    <Card className="shadow-lg flex flex-col min-h-[14rem] max-h-[30rem]">
+    <Card
+      ref={innerRef}
+      className="shadow-lg flex flex-col min-h-[14rem] max-h-[30rem]"
+    >
       <CardHeader className="pb-2">
         <CardDescription>
           <span className="flex justify-between">
