@@ -3,9 +3,21 @@
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
-export async function getAllPosts(page: number = 1, limit: number = 9) {
+export async function getAllPosts(
+  page: number = 1,
+  limit: number = 9,
+  filter?: string
+) {
   try {
     const posts = await prisma?.post.findMany({
+      where: filter
+        ? {
+            title: {
+              contains: filter,
+              mode: "insensitive",
+            },
+          }
+        : undefined,
       skip: (page - 1) * limit,
       take: limit,
     });

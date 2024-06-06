@@ -23,19 +23,22 @@ export default function NavbarSearch() {
   }, []);
 
   const [query, setQuery] = useState(searchParams.get("search") || "");
-  const onQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const current = new URLSearchParams(searchParams.toString());
+  const onQueryChange: any = (event: any) => {
     const value = event.target.value;
-    if (!value) {
-      current.delete("search");
-    } else {
-      current.set("search", value);
-    }
+    setQuery(value);
+    const queryChange = () => {
+      const current = new URLSearchParams(searchParams.toString());
+      if (!value) {
+        current.delete("search");
+      } else {
+        current.set("search", value);
+      }
 
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`${pathname}${query}`);
-    setQuery(current.get("search") || "");
+      const search = current.toString();
+      const query = search ? `?${search}` : "";
+      router.replace(`${pathname}${query}`);
+    };
+    debounce(queryChange, 1000)();
   };
 
   return (
@@ -63,4 +66,17 @@ export default function NavbarSearch() {
       </>
     ))
   );
+}
+
+function debounce<F extends (...args: any[]) => any>(
+  func: F,
+  delay: number
+): (...args: Parameters<F>) => void {
+  let debounceTimer: NodeJS.Timeout | null;
+  return (...args: Parameters<F>) => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+    debounceTimer = setTimeout(() => func(...args), delay);
+  };
 }

@@ -2,7 +2,7 @@ import { generateSlug } from "@/components/card-posts/card-item";
 import { formSchema } from "@/components/navbar/navbar-login-menu";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 export async function newPost(formData: z.infer<typeof formSchema>) {
@@ -25,6 +25,7 @@ export async function newPost(formData: z.infer<typeof formSchema>) {
     });
     if (!post) return { error: "Post not created", status: 500 };
     revalidatePath("/", "page");
+    revalidateTag("posts");
     return { post, status: 201 };
   } catch (error: any) {
     if (error instanceof PrismaClientKnownRequestError) {
