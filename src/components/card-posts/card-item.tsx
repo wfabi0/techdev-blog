@@ -41,7 +41,6 @@ export default function CardItem({ session, post, innerRef }: CardItemProps) {
           <Link
             className={`text-blue-500 antialiased line-clamp-1`}
             href={"/blog/" + generateSlug(post.slug)}
-            title={post.title}
           >
             {post.title}
           </Link>
@@ -49,7 +48,6 @@ export default function CardItem({ session, post, innerRef }: CardItemProps) {
       </CardHeader>
       <CardContent>
         <p
-          title={htmlToText(post.body)}
           dangerouslySetInnerHTML={{ __html: post.body }}
           className="text-gray-900 dark:text-gray-300 antialiased line-clamp-5"
         />

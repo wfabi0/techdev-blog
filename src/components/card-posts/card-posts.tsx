@@ -91,11 +91,9 @@ export default function CardPosts({ session }: CardPostsProps) {
     );
 
     if (!cachedData && !isLoading) {
-      console.log("refetch");
       refetch();
     } else if (!isLoading && cachedDataMap?.length === 0) {
       refetch();
-      console.log("refetch");
     }
   }, [query, queryClient, filterPosts, isLoading, refetch]);
 
