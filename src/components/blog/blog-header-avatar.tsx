@@ -2,6 +2,7 @@ import { Post } from "@prisma/client";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { GithuBService } from "@/modules/github/github-services";
 
 interface BlogHeaderAvatarProps {
   post: Post;
@@ -10,21 +11,7 @@ interface BlogHeaderAvatarProps {
 export default async function BlogHeaderAvatar({
   post,
 }: BlogHeaderAvatarProps) {
-  const fetchUsername = async () => {
-    "use server";
-
-    const res = await fetch(
-      `${process.env.BASE_HOST_URL}:${process.env.PORT}/api/github/` +
-        post.authorsId[0],
-      {
-        method: "GET",
-      }
-    );
-    const data = await res.json();
-    return data.name;
-  };
-
-  const username = await fetchUsername();
+  const username = (await GithuBService.fetchUser(post.authorsId[0])).login;
 
   return (
     <Button

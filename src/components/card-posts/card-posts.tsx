@@ -121,7 +121,7 @@ export default function CardPosts({ session }: CardPostsProps) {
     </div>
   ) : (
     <div className="flex flex-col justify-center md:p-10 p-2 w-screen gap-y-10">
-      <div className="grid md:grid-cols-3 gap-4 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {postContentFind && postContentFind.length > 0
           ? postsContent
           : "No posts found"}
