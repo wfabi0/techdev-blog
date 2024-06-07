@@ -1,8 +1,8 @@
+import { newPost } from "@/modules/posts/posts-actions";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import NavbarLoginMenu from "./navbar-login-menu";
-import { newPost } from "@/modules/posts/posts-actions";
 
 interface NavbarAvatarProps {
   session: Session | null;

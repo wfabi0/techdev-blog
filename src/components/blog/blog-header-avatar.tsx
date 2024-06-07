@@ -2,7 +2,7 @@ import { Post } from "@prisma/client";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { GithuBService } from "@/modules/github/github-services";
+import { GithubService } from "@/modules/github/github-services";
 
 interface BlogHeaderAvatarProps {
   post: Post;
@@ -11,7 +11,10 @@ interface BlogHeaderAvatarProps {
 export default async function BlogHeaderAvatar({
   post,
 }: BlogHeaderAvatarProps) {
-  const username = (await GithuBService.fetchUser(post.authorsId[0])).login;
+  const username: string =
+    process.env.NODE_ENV === "production"
+      ? (await GithubService.fetchUser(post.authorsId[0])).username
+      : post?.authorsId || "Username";
 
   return (
     <Button
@@ -33,7 +36,7 @@ export default async function BlogHeaderAvatar({
             />
           </Avatar>
           <div className="antialiased line-clamp-1">
-            <div className="line-clamp-1">{username || post.authorsId[0]}</div>
+            <div className="line-clamp-1">{username || "Not identified"}</div>
           </div>
         </Link>
       </div>

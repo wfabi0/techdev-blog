@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { Post } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function getAllPosts(
@@ -61,9 +62,38 @@ export async function getPostBySlug(slug: string) {
       where: {
         slug,
       },
+      include: {
+        comments: {
+          take: 10,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
     });
     if (!post) return { error: "No post found", status: 404 };
     return { post };
+  } catch (error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { error: error.message, code: error.code, status: 500 };
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
+export async function getLastCommentByUser(userId: string) {
+  try {
+    const comment = await prisma?.comment.findFirst({
+      where: {
+        authorId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    if (!comment) return { error: "No comment found", status: 404 };
+    return { comment };
   } catch (error: any) {
     if (error instanceof PrismaClientKnownRequestError) {
       return { error: error.message, code: error.code, status: 500 };

@@ -12,7 +12,7 @@ async function fetchUser(id: string) {
 
   if (cacheGithub.has(id)) {
     const cache = cacheGithub.get(id);
-    if (Date.now() - cache.expires < 3600000) {
+    if (Date.now() - cache.expires < 3600000 * 1) {
       return cacheGithub.get(id).data;
     } else {
       cacheGithub.remove(id);
@@ -35,6 +35,6 @@ async function fetchUser(id: string) {
   return data;
 }
 
-export const GithuBService = {
+export const GithubService = {
   fetchUser,
 };
