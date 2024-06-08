@@ -174,7 +174,7 @@ export default function NavbarLoginMenu({
               </>
             )}
             <DropdownMenuItem asChild>
-              <Link href={"/profile/posts"}>
+              <Link href={"/profile"}>
                 <Send className="mr-2 h-4 w-4" />
                 <span>Publications</span>
               </Link>

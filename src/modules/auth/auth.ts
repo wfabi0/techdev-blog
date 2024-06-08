@@ -5,8 +5,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [github],
   callbacks: {
     authorized({ request, auth }) {
-      // const { pathname } = request.nextUrl;
-      // if ([""].includes(pathname)) return !!auth;
+      const { pathname } = request.nextUrl;
+      if (pathname === "/profile") return !!auth;
       return true;
     },
     redirect({ url, baseUrl }) {
@@ -45,7 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
     maxAge: 3600,
   },
-  debug: process.env.NODE_ENV !== "production" ? true : false,
+  // debug: process.env.NODE_ENV !== "production" ? true : false,
 });
 
 interface Token {

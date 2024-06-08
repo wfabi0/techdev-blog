@@ -1,7 +1,13 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full border-t-4 border-gray-500 dark:border-white border-solid h-20 w-20" />
-    </div>
+    <main className="flex min-h-screen flex-col justify-between bg-slate-50 dark:bg-[#0B1120] transition-colors duration-200 bg-opacity-50">
+      <div className="flex-1 py-10">
+        <div className="flex pt-[10%] justify-center items-center">
+          <div
+            className={`h-14 w-14 animate-spin rounded-full border-t-4 border-solid border-gray-500 dark:border-white`}
+          />
+        </div>
+      </div>
+    </main>
   );
 }
