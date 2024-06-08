@@ -90,10 +90,7 @@ export default async function ProfilePage() {
                 </div>
                 <CardTitle>
                   <PiHandWavingBold className="inline-block mr-1" />
-                  Welcome,{" "}
-                  {userData
-                    ? userData.username
-                    : session.user.name || session.user.userId}
+                  Welcome, {username || session.user.userId}
                 </CardTitle>
                 <CardDescription>
                   Your are logged with GitHub Account.
