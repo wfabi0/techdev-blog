@@ -1,13 +1,13 @@
+import { newComment } from "@/modules/posts/posts-actions";
 import { Post } from "@prisma/client";
 import { MessageCircle, Undo2 } from "lucide-react";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import BlogFooterTextarea from "./comment/blog-footer-textarea";
-import { newComment } from "@/modules/posts/posts-actions";
 import BlogFooterComments, {
   PostWithComments,
 } from "./comment/blog-footer-comments";
+import BlogFooterTextarea from "./comment/blog-footer-textarea";
 
 interface BlogFooterProps {
   session: Session | null;
@@ -17,12 +17,14 @@ interface BlogFooterProps {
 export default function BlogFooter({ session, post }: BlogFooterProps) {
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">
-        <div className="flex space-x-1 items-center">
-          <MessageCircle />
-          <span className="text-lg">
-            Comments ({(post as PostWithComments)?.comments.length || 0})
-          </span>
+      <h1 className="font-semibold">
+        <div className="flex space-x-1 items-center justify-between">
+          <p className="flex space-x-1 items-center">
+            <MessageCircle />
+            <span className="text-lg">
+              Comments ({(post as PostWithComments)?.comments.length || 0})
+            </span>
+          </p>
         </div>
       </h1>
       <div className="space-y-4">

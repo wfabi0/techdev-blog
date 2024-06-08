@@ -34,7 +34,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.accessToken) {
         session.accessToken = token.accessToken as string;
       }
-      session.successTime = Date.now();
       return session;
     },
   },
@@ -42,7 +41,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/auth/login",
   },
   trustHost: true,
-  // debug: process.env.NODE_ENV !== "production" ? true : false,
+  session: {
+    strategy: "jwt",
+    maxAge: 3600,
+  },
+  debug: process.env.NODE_ENV !== "production" ? true : false,
 });
 
 interface Token {
@@ -57,7 +60,6 @@ declare module "next-auth" {
   }
   interface Session {
     accessToken?: string;
-    successTime: number;
   }
   interface JWT {
     accessToken?: string;
