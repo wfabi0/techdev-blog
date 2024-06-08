@@ -11,10 +11,13 @@ interface BlogHeaderAvatarProps {
 export default async function BlogHeaderAvatar({
   post,
 }: BlogHeaderAvatarProps) {
-  const username: string =
+  const data =
     process.env.NODE_ENV === "production"
-      ? (await GithubService.fetchUser(post.authorsId[0])).username
-      : post?.authorsId || "Username";
+      ? await GithubService.fetchUser(post.authorsId[0])
+      : null;
+
+  const username = data?.username || data?.name || post.authorsId[0];
+  const login = data?.login || post.authorsId[0];
 
   return (
     <Button
