@@ -1,4 +1,4 @@
-import cacheGithub from "@/lib/github-controller";
+import { cacheGithub } from "@/lib/controllers";
 
 async function fetchUser(id: string) {
   "use server";

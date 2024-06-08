@@ -1,7 +1,7 @@
 "use server";
 
+import { cacheCommentsCount, cachePostsCount } from "@/lib/controllers";
 import prisma from "@/lib/prisma";
-import { Post } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export async function getAllPosts(
@@ -94,6 +94,78 @@ export async function getLastCommentByUser(userId: string) {
     });
     if (!comment) return { error: "No comment found", status: 404 };
     return { comment };
+  } catch (error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { error: error.message, code: error.code, status: 500 };
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
+export async function getTotalPostByAuthor(userId: string) {
+  if (isNaN(parseInt(userId))) {
+    return {
+      error: "User not found.",
+      status: 404,
+    };
+  }
+
+  if (cachePostsCount.has(userId)) {
+    const cache = cachePostsCount.get(userId);
+    if (Date.now() - cache.expires < 30000) {
+      return cachePostsCount.get(userId).data;
+    } else {
+      cachePostsCount.remove(userId);
+    }
+  }
+
+  try {
+    const total = await prisma?.post.count({
+      where: {
+        authorsId: {
+          has: userId.toString(),
+        },
+      },
+    });
+
+    cachePostsCount.set(userId, { total: total || 0 });
+    return { total: total || 0 };
+  } catch (error: any) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { error: error.message, code: error.code, status: 500 };
+    } else {
+      throw new Error(error.message);
+    }
+  }
+}
+
+export async function getTotalCommentByAuthor(userId: string) {
+  if (isNaN(parseInt(userId))) {
+    return {
+      error: "User not found.",
+      status: 404,
+    };
+  }
+
+  if (cacheCommentsCount.has(userId)) {
+    const cache = cacheCommentsCount.get(userId);
+    if (Date.now() - cache.expires < 30000) {
+      return cacheCommentsCount.get(userId).data;
+    } else {
+      cacheCommentsCount.remove(userId);
+    }
+  }
+
+  try {
+    const total = await prisma?.comment.count({
+      where: {
+        authorId: userId.toString(),
+      },
+    });
+
+    cacheCommentsCount.set(userId, { total: total || 0 });
+    return { total: total || 0 };
   } catch (error: any) {
     if (error instanceof PrismaClientKnownRequestError) {
       return { error: error.message, code: error.code, status: 500 };
