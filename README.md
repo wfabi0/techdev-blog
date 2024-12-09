@@ -1,4 +1,4 @@
-# TechBlog
+# [TechBlog 🗒️](https://techdev-blog.vercel.app/)
 
 Website about tech development insights.
 
@@ -43,17 +43,9 @@ npm install
 npm run dev
 ```
 
-## Usage
-
-Describe how to use the project, including code examples and screenshots if necessary.
-
 ## Contribution
 
 Contributions are welcome! Feel free to open issues and pull requests.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for more details.
 
 ## Learn More
 
